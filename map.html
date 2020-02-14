@@ -7,15 +7,52 @@
   .states {
     fill: #222;
   }
-  
-  .states :hover {
-    fill: orange;
-  }
+
+  .d3-tip {
+			  line-height: 1;
+			  font-weight: bold;
+			  padding: 12px;
+			  background: black;
+			  color: #fff;
+			  border-radius: 2px;
+			  opacity: 0.001%;
+			}
+			.d3-tip:after {
+			  box-sizing: border-box;
+			  display: inline;
+			  font-size: 10px;
+			  width: 100%;
+			  line-height: 1;
+			  color: black;
+			  content: "\25BC";
+			  position: absolute;
+			  text-align: center;
+			  opacity: 0.001%;
+			}
+
+			.d3-tip.n:after {
+			  margin: -1px 0 0 0;
+			  top: 100%;
+			  left: 0;
+			  opacity: 0.001%;
+			}
+
+			#state-borders {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
   
   </style>  
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
   </head>
   <body>
     <script>
@@ -46,10 +83,103 @@
             .data(topojson.feature(australia, australia.objects.states).features)
           .enter().append("path")
             .attr("d", path)
+      //       .on("click", clicked);
+
+      //       g.append("path")
+      // .datum(topojson.mesh(australia, australia.objects.states, function(a, b) { return a !== b; }))
+      // .attr("id", "state-borders")
+      // .attr("d", path);
+
+
+
+        // d3.csv("fire_archive_M6_96619.csv", function(data) {
+        d3.csv("data/fire_archive_M6_96619.csv" , function(data){
+
+  //       	svg.selectAll("circle")
+		// .data(data).enter()
+		// .append("circle")
+		// .attr("cx", function (d , i) { console.log(projection(d.longitude)[i]); return projection(d.longitude)[i]; })
+		// .attr("cy", function (d, i) { return projection(d.latitude)[i]; })
+		// .attr("r", "8px")
+		// .attr("fill", "red")
+		var tip = d3.tip()
+					.attr('class', 'd3-tip')
+					.offset([-5, 0])
+					.html(function(d) {
+							// return ("frp : "+d.frp +".<br> T° (Kelvin) :" +d.brightness + ".");	
+							 var t = Math.round(d.brightness - 273)
+							return ("frp : "+d.frp +"<br> T :" + t + " °C .");
+							})		
+		svg.call(tip);
+		var circles = svg.selectAll(".pin")
+						  .data(data)
+						  .enter().append("circle", ".pin")
+						  .attr("r", 10)
+						  .style("opacity", "1")
+						  .attr("transform", function(d) {
+							return "translate(" + projection([
+							  d.longitude,
+							  d.latitude
+							]) + ")"
+							})
+						  .attr("fill", function(d,i) {             
+            if (Math.round(d.brightness) <= 320) {return "salmon"}  //less than 47
+            else if (Math.round(d.brightness) >320 && Math.round(d.brightness) <= 330)    { return "crimson" } //57
+            	else {return "darkred"} // >59
+						  })
+						  .on('mouseover', tip.show)
+						  .on('click', tip.hide);
+		circles.transition()
+				.delay(2000)
+				.duration(2000)
+				.attr("r", "3");
+
+//legend
+				var color = ["" ,"salmon","crimson","darkred"]
+				var classes = ["" , "[0,47]" , "[46,57]" , "[58,120]"]
+
+				 var legend = svg.selectAll('g')
+      .data(classes)
+      .enter()
+      .append('g')
+      .attr('class', 'legend');
+
+    legend.append('rect')
+      .attr('x',170)
+      .attr('y', function(d, i) {
+        return 100 + i * 20;
+      })
+      .attr('width', 10)
+      .attr('height', 10)
+      .style('fill', function(d,i) {
+        return color[i];
       });
-      
+
+    legend.append('text')
+    		.attr("font-size", 14)
+    		.attr("font-family","monospace")
+    		.attr('x', 150)
+    		.attr('y', 100)
+    		.text("Temperature en °C ")
+
+    legend.append('text')
+      .attr("font-size", 12)
+      .attr("font-family", "monospace")
+      .attr('x', 200)
+      .attr('y', function(d, i) {
+        return (i * 20) + 109;
+      })
+      .text(function(d,i) {
+        return classes[i];
+      });
+    
+
+        })
+      }); 
       d3.select(self.frameElement).style("height", height + "px");
-      
+
+
+ 
     </script>
   </body>
 </html>
