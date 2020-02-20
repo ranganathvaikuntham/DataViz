@@ -7,7 +7,10 @@
   .states {
     fill: #222;
   }
-
+  
+/*  .states :hover {
+    fill: orange;
+  }*/
   .d3-tip {
 			  line-height: 1;
 			  font-weight: bold;
@@ -36,23 +39,14 @@
 			  left: 0;
 			  opacity: 0.001%;
 			}
-
-			#state-borders {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1.5px;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  pointer-events: none;
-}
-
   
   </style>  
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
     <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js"></script>
   </head>
   <body>
     <script>
@@ -74,112 +68,380 @@
           .attr("width", width)
           .attr("height", height);
       
+	  //var parseDate = d3.timeParse("%Y-%m-%d");
+	  var parseDate = d3.timeParse("%m/%d/%Y");
+	  var x; 
+	  var dataglobal;
+
+	  var svg2 = d3.select("body").append("svg")
+          .attr("width", 860)
+          .attr("height", 450);
+
+      // define the month names - redundant as month names are now inbuilt and can be extracted
+      const monthNames = ["January", "February", "March", "April", "May", "June",
+  						 "July", "August", "September", "October", "November", "December"
+						 ];
+
+
       d3.json("australia.json", function(error, australia) {
         if (error) throw error;
       
+      // drawing the  map of Australia with data
         svg.append("g")
             .attr("class", "states")
           .selectAll("path")
             .data(topojson.feature(australia, australia.objects.states).features)
           .enter().append("path")
             .attr("d", path)
-      //       .on("click", clicked);
-
-      //       g.append("path")
-      // .datum(topojson.mesh(australia, australia.objects.states, function(a, b) { return a !== b; }))
-      // .attr("id", "state-borders")
-      // .attr("d", path);
-
 
 
         // d3.csv("fire_archive_M6_96619.csv", function(data) {
-        d3.csv("fire_archive_M6_96619.csv" , function(data){
+        d3.csv("data/fire_archive_M6_96619 - DataAdded1.csv" , function(data){
 
-  //       	svg.selectAll("circle")
-		// .data(data).enter()
-		// .append("circle")
-		// .attr("cx", function (d , i) { console.log(projection(d.longitude)[i]); return projection(d.longitude)[i]; })
-		// .attr("cy", function (d, i) { return projection(d.latitude)[i]; })
-		// .attr("r", "8px")
-		// .attr("fill", "red")
-		var tip = d3.tip()
-					.attr('class', 'd3-tip')
-					.offset([-5, 0])
-					.html(function(d) {
-							// return ("frp : "+d.frp +".<br> T° (Kelvin) :" +d.brightness + ".");	
-							 var t = Math.round(d.brightness - 273)
-							return ("frp : "+d.frp +"<br> T :" + t + " °C .");
-							})		
-		svg.call(tip);
-		var circles = svg.selectAll(".pin")
-						  .data(data)
-						  .enter().append("circle", ".pin")
-						  .attr("r", 10)
-						  .style("opacity", "1")
-						  .attr("transform", function(d) {
-							return "translate(" + projection([
-							  d.longitude,
-							  d.latitude
-							]) + ")"
-							})
-						  .attr("fill", function(d,i) {             
-            if (Math.round(d.brightness) <= 320) {return "salmon"}  //less than 47
-            else if (Math.round(d.brightness) >320 && Math.round(d.brightness) <= 330)    { return "crimson" } //57
-            	else {return "darkred"} // >59
-						  })
-						  .on('mouseover', tip.show)
-						  .on('click', tip.hide);
-		circles.transition()
-				.delay(2000)
-				.duration(2000)
-				.attr("r", "3");
 
-//legend
-				var color = ["" ,"salmon","crimson","darkred"]
-				var classes = ["" , "[0,47]" , "[46,57]" , "[58,120]"]
+			data.forEach(function(d)
+           	 {
+                d.date = parseDate(d.acq_date);
+            	}
+              );
 
-				 var legend = svg.selectAll('g')
-      .data(classes)
-      .enter()
-      .append('g')
-      .attr('class', 'legend');
+    		x = d3.scaleTime()
+    			.domain([ d3.min(data, function(d){return new Date(d.date).getDate();}),
+                d3.max(data, function(d){return new Date(d.date).getDate();})
+                ])
+    			.range([0, 860]);
 
-    legend.append('rect')
-      .attr('x',170)
-      .attr('y', function(d, i) {
-        return 100 + i * 20;
-      })
-      .attr('width', 10)
-      .attr('height', 10)
-      .style('fill', function(d,i) {
-        return color[i];
-      });
+    	// data printing?
+		console.log("original data") ;  
+		console.log(data) ;		
+       // good till here -- yes
 
-    legend.append('text')
-    		.attr("font-size", 14)
-    		.attr("font-family","monospace")
-    		.attr('x', 150)
-    		.attr('y', 100)
-    		.text("Temperature en °C ")
+       // Nest fire values by date.
+			var firedatabydate = d3.nest()
+				.key(function(d) { return d.date; })
+			.entries(data);
 
-    legend.append('text')
-      .attr("font-size", 12)
-      .attr("font-family", "monospace")
-      .attr('x', 200)
-      .attr('y', function(d, i) {
-        return (i * 20) + 109;
-      })
-      .text(function(d,i) {
-        return classes[i];
-      });
-    
+		// check here
+            //console.log("firedatabydate");
+			//console.log(firedatabydate) ;
 
-        })
-      }); 
+		// Parse and caculate some values for each firedata
+			firedatabydate.forEach(function(s) {
+				s.values.forEach(function(d) {
+				d.frp = d.frp;
+				d.brightness = d.brightness; // possibly redundant
+				});
+
+				// store max frp and max brightness for each day
+				s.maxfrp = d3.max(s.values, function(d) { return d.frp; });
+				s.maxbrightness = d3.max(s.values, function(d) { return d.brightness; });
+
+				});
+            
+            console.log("firedatabydate");
+			console.log(firedatabydate) ;
+			// good till here
+
+			//treating the firedatabydate nested data and putting it in simple 
+			//json type format so we can plot it easier
+			var data_stack = []
+			    
+			firedatabydate.forEach(function(d, i) {
+			    //d.values = d.values.map(function(e) { return e.value; })
+			    var t ={}
+			      //symbols.forEach(function(e, i) {
+			       // t[e] = d.values[i]
+			      //})
+			    //console.log("hello")
+			    //console.log(d.key)
+			    t.date = new Date(d.key);
+			    t.maxbrightness = d.maxbrightness;
+			    t.maxfrp = d.maxfrp;
+			    data_stack.push(t)
+			    })
+
+			//console.log(22)
+			//console.log(data_stack) 
+			//good till here
+			dataglobal = firedatabydate;
+	        // accessing value (arrays) for a particular key - first
+	        //console.log("input check")
+	        //console.log(dataglobal[0].values)
+	        plotfirepoints (svg, data);
+	        plotheatmap(svg2, data_stack) ;
+			console.log('After plot')
+
+            /*
+			var tip = d3.tip()
+						.attr('class', 'd3-tip')
+						.offset([-5, 0])
+						//.call(log,"Function called")
+						.html(function(d) {
+								// return ("frp : "+d.frp +".<br> T° (Kelvin) :" +d.brightness + ".");	
+								 var t = Math.round(d.brightness - 273)
+								return ("frp : "+d.frp +"<br> T :" + t + " °C ");
+								})		
+			svg.call(tip);
+			*/
+	        }) // closing of fire data
+
+      });  // closing of australia json
+
       d3.select(self.frameElement).style("height", height + "px");
 
+function plotfirepoints (svg, data) {
+			console.log("The data for this day",data); // do we have the data here?
+			//console.log("It is for the month of",moment(data[0].date).month() + 1);
 
- 
+			//remove all existing points
+			svg.selectAll("#the_SVG_ID").remove();
+			//svg.selectAll(".pin").remove();
+
+			var circles = svg.selectAll(".pin")
+							  .data(data)
+							  .enter().append("circle", ".pin")
+							  .attr("r", 10)
+							  .attr("id","the_SVG_ID")
+
+							  .style("opacity", "1")
+							  .attr("transform", function(d) {
+								return "translate(" + projection([
+								  d.longitude,
+								  d.latitude
+								]) + ")"
+								})
+							  .attr("fill", function(d,i) {             
+	            if (Math.round(d.brightness) <= 320) {return "salmon"}  //less than 47
+	            else if (Math.round(d.brightness) >320 && Math.round(d.brightness) <= 330) { return "crimson" } //57
+	            	else {return "darkred"} // >59
+							  })
+							  //.on('mouseover', tip.show)
+							  //.on('click', tip.hide);
+			//circles.exit(data).remove();
+			circles.transition()
+					.delay(2000)
+					.duration(2000)
+					.attr("r", "3");
+						
+			
+}
+
+function plotheatmap (svg, data) {
+  console.log(data)
+
+  const width = 860
+  const height = 450
+  const margins = { top: 20, right: 40, bottom: 30, left: 60 }
+
+  const xScale = defineXScale(data, width)
+  const yScale = defineYScale(data, height)
+ // console.log('sdfs');
+ // console.log(xScale(data[0].date));
+  //console.log('sdfs');
+  const colorScale = defineColorScale()
+
+  const g = createCanvas(svg, width, height, margins)
+  drawXAxis(g, xScale)
+  drawYAxis(g, yScale)
+  drawRectangles(g, xScale, yScale, colorScale, data)
+}
+
+ // logic of plotting the rectangles 
+function drawRectangles(g, xScale, yScale, colorScale, data) {
+
+   // console.log('d.date');
+    //console.log(d3.max(data, function(d){return d.date;}));
+    //console.log('d.date');
+
+  g.selectAll('rect')
+    .data(data)
+    .call(log,86)
+    //.call(log,moment(data[54].key).date()) 
+    //.call(log,moment(data[31].key).month() + 1)
+    //.call()
+    //.call(log,84)
+    //.call(log(data))
+     // error here - what is d referring to? array name needed
+     // d.maxbrightness even valid?
+    
+
+    .enter().append('rect')
+      //.attr('x', d => xScale(moment(d.date).year()))
+       //.call(log,33)
+      // .call(log,data)
+      //.attr('x', d => xScale(moment(d.key).date()))
+      .attr('x', function(d){return x(d.date.getDate());})
+      //.call(log,d.key)
+      //.attr('y', d => yScale(moment(d.key).month() + 1))
+      .attr('y', d => yScale(moment(d.date).month() + 1))
+      .attr('width', 60)//xScale.bandwidth()*0.8)
+      .attr('height', yScale.bandwidth()*0.8)
+      .attr('fill', d => colorScale(d.maxbrightness))
+      .attr("style",function(d) {return "stroke:" + "white"+ ";stroke-width:2px";})
+      //.on("mouseover",function(){handleMouseOver();})
+      .on("mouseover", handleMouseOver)
+      //.on("mouseout", handleMouseOut);
+      .on("mouseout",function(d){svg2.select("text.hover").remove();
+       d3.select(this).style("fill", colorScale(d.maxbrightness));
+                                })
+      .on("click", handleMouseClick)
+      //.style("stroke-width", 2)
+}
+
+      // Create Event Handlers for mouse
+
+
+function handleMouseClick(d, i) {
+
+
+//console.log(d.date);
+var dateoffire = d.date.toString();
+//console.log(dateoffire+'tttt')
+//worked till here
+
+//console.log(svg); // worked as well
+//console.log(dataglobal); // worked as well
+//console.log("Required data")
+//console.log(dataglobal[dataglobal])
+// access error
+
+//find the corresponding object in array of objects
+var inputData = dataglobal.find(obj => {
+  return obj.key === dateoffire
+})
+
+//console.log("Input data")
+//console.log(inputData)
+//console.log("Input data2")
+//console.log(inputData.values)
+plotfirepoints (svg, inputData.values);
+}
+
+
+function handleMouseOver(d, i) {  // Add interactivity
+
+            // Use D3 to select element, change color and size
+            // d3.select(this).attr({
+            //   fill: "red",
+            //   //r: radius * 2
+            // });
+           d3.select(this).style("fill", "red");
+          //this.setState({ fillColour: 'green' });  
+          //console.log(d);  
+          datenow = d.date.getDate();
+          maxfrpval = d.maxfrp;
+          maxbrightnessval = d.maxbrightness;
+          maxtemperatureval = Math.round(maxbrightnessval - 273);
+          stringtoprint =  "|"+ monthNames[moment(d.date).month()] +":" + datenow + "| Maxfrpval:" + maxfrpval+ "| MaxTemperature:"  + maxtemperatureval+"°C|"
+
+          svg2.append("text")
+          .attr("x",x(d.date.getDate())-130)
+          .attr("y",moment(d.date).month()*86-485 )
+          .attr("class", "hover")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "18px")
+          .style("fill", "black")
+          .text(function(d,i) {
+            
+            console.log("mouseover");
+            return stringtoprint;
+            })
+      }
+
+
+function handleMouseOut(d, i) {
+            // Use D3 to select element, change color back to normal
+           // d3.select(this).style("fill", colorScale(d.maxbrightness));
+            /*
+            d3.select(this).attr({
+              fill: d =>colorScale(d.maxbrightness),
+              //r: radius
+            }); */
+
+            // Select text by id and then remove
+              svg2.select("text.hover").remove();
+      }// Remove text location
+          
+
+function log(sel,msg) {
+  console.log(msg,sel);
+}
+  
+  
+function drawXAxis (g, xScale) {
+  const xAxis = d3.axisTop(xScale)
+  //.tickFormat(d => moment(d, 'M').format('MMMM'))
+  
+  g.append('g')
+    .call(xAxis)
+}
+
+function drawYAxis (g, yScale) {
+  const yAxis = d3.axisLeft(yScale)
+    .tickFormat(d => moment(d, 'M').format('MMMM'))
+
+  g.append('g')
+    .call(yAxis)
+}
+
+function defineColorScale () {
+  return d3.scaleQuantile()
+    .domain(d3.range(0, 505))
+    .range([
+      "#5E4FA2",
+      "#3288BD",
+      "#66C2A5",
+      "#ABDDA4",
+      "#E6F598",
+      "#FFFFBF",
+      "#FEE08B",
+      "#FDAE61",
+      "#F46D43",
+      "#D53E4F",
+      "#9E0142"
+    ])
+}
+
+function defineXScale (data, width) {
+  console.log('here');
+  console.log(data[0].date);
+  console.log('here');
+  return d3.scaleTime()
+    //.domain(d3.map(data, d => d.key.date()))//d.date.substring(0, 4)).keys())
+    //.domain(d3.extent(data, d =>d.date))
+    //.domain([data[0].date, data[60].date])
+    //.call("HERE")
+  //  .call(log,d3.min(data, function(d){return d.date;}))
+    .domain([
+                d3.min(data, function(d){return d.date.getDate();}),
+                d3.max(data, function(d){return d.date.getDate();})
+                ])
+    .range([0, width])
+    //.domain([new Date("January 1, 1940 00:00:00"), new Date("January 4, 1980 00:00:00")]);
+     //.domain([1,31])
+    //.padding(0.4)
+}
+
+       
+
+function defineYScale (data, height) {
+  return d3.scaleBand()
+    .range([0, height])
+    .domain(d3.range(8, 13))
+    .padding(0.2)
+}
+
+function createCanvas (svg, width, height, margins) {
+  return svg
+      .attr('width', width + margins.left + margins.right)
+      .attr('height', height + margins.top + margins.bottom)
+    .append('g')
+      .attr('transform', `translate(${margins.left}, ${margins.top})`)
+}
+
+
+
+
     </script>
   </body>
 </html>
