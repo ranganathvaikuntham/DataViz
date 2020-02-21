@@ -11,35 +11,20 @@
 /*  .states :hover {
     fill: orange;
   }*/
-  .d3-tip {
-			  line-height: 1;
-			  font-weight: bold;
-			  padding: 12px;
-			  background: black;
-			  color: #fff;
-			  border-radius: 2px;
-			  opacity: 0.001%;
-			}
-			.d3-tip:after {
-			  box-sizing: border-box;
-			  display: inline;
-			  font-size: 10px;
-			  width: 100%;
-			  line-height: 1;
-			  color: black;
-			  content: "\25BC";
-			  position: absolute;
-			  text-align: center;
-			  opacity: 0.001%;
-			}
 
-			.d3-tip.n:after {
-			  margin: -1px 0 0 0;
-			  top: 100%;
-			  left: 0;
-			  opacity: 0.001%;
-			}
-  
+  div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 60px;					
+    height: 28px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+	}
+
   </style>  
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
@@ -72,6 +57,11 @@
 	  var parseDate = d3.timeParse("%m/%d/%Y");
 	  var x; 
 	  var dataglobal;
+
+	  // Define the div for the tooltip
+	 var divtool = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
 
 	  var svg2 = d3.select("body").append("svg")
           .attr("width", 860)
@@ -171,18 +161,18 @@
 	        plotheatmap(svg2, data_stack) ;
 			console.log('After plot')
 
-            /*
-			var tip = d3.tip()
-						.attr('class', 'd3-tip')
-						.offset([-5, 0])
-						//.call(log,"Function called")
-						.html(function(d) {
-								// return ("frp : "+d.frp +".<br> T° (Kelvin) :" +d.brightness + ".");	
-								 var t = Math.round(d.brightness - 273)
-								return ("frp : "+d.frp +"<br> T :" + t + " °C ");
-								})		
-			svg.call(tip);
-			*/
+            
+			// var tip = d3.tip()
+			// 			.attr('class', 'd3-tip')
+			// 			.offset([-5, 0])
+			// 			//.call(log,"Function called")
+			// 			.html(function(d) {
+			// 					// return ("frp : "+d.frp +".<br> T° (Kelvin) :" +d.brightness + ".");	
+			// 					 var t = Math.round(d.brightness - 273)
+			// 					return ("frp : "+d.frp +"<br> T :" + t + " °C ");
+			// 					})		
+			//svg.call(tip);
+			
 	        }) // closing of fire data
 
       });  // closing of australia json
@@ -197,11 +187,13 @@ function plotfirepoints (svg, data) {
 			svg.selectAll("#the_SVG_ID").remove();
 			//svg.selectAll(".pin").remove();
 
+
 			var circles = svg.selectAll(".pin")
 							  .data(data)
 							  .enter().append("circle", ".pin")
 							  .attr("r", 10)
 							  .attr("id","the_SVG_ID")
+							  //.on("mouseover",console.log("Over a point"))
 
 							  .style("opacity", "1")
 							  .attr("transform", function(d) {
@@ -215,14 +207,30 @@ function plotfirepoints (svg, data) {
 	            else if (Math.round(d.brightness) >320 && Math.round(d.brightness) <= 330) { return "crimson" } //57
 	            	else {return "darkred"} // >59
 							  })
+							  //.on('mouseover',console.log("Hello"))
 							  //.on('mouseover', tip.show)
 							  //.on('click', tip.hide);
+						    .on("mouseover", function(d) {	
+						       var t = Math.round(d.brightness - 273);	
+		            		   divtool.transition()		
+				                .duration(200)		
+				                .style("opacity", .9);		
+				            //div.html(formatTime(d.date) + "<br/>"  + d.close)
+				            divtool.html("frp : "+d.frp +"<br> T :" + t + " °C")	
+				                .style("left", (d3.event.pageX) + "px")		
+				                .style("top", (d3.event.pageY - 28) + "px");	
+				            })					
+				        .on("mouseout", function(d) {		
+				            divtool.transition()		
+				                .duration(500)		
+				                .style("opacity", 0);	
+				        });
 			//circles.exit(data).remove();
 			circles.transition()
 					.delay(2000)
 					.duration(2000)
 					.attr("r", "3");
-						
+			//circles.on("mouseover", console.log("Over a point"))
 			
 }
 
