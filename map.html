@@ -187,7 +187,6 @@ function plotfirepoints (svg, data) {
 			svg.selectAll("#the_SVG_ID").remove();
 			//svg.selectAll(".pin").remove();
 
-
 			var circles = svg.selectAll(".pin")
 							  .data(data)
 							  .enter().append("circle", ".pin")
@@ -230,6 +229,46 @@ function plotfirepoints (svg, data) {
 					.delay(2000)
 					.duration(2000)
 					.attr("r", "3");
+
+
+			//legend
+				var color = ["" ,"salmon","crimson","darkred"]
+				var classes = ["" , "[0,47]" , "[46,57]" , "[58,120]"]
+
+				 var legend = svg.selectAll('g')
+			      .data(classes)
+			      .enter()
+			      .append('g')
+			      .attr('class', 'legend');
+
+			    legend.append('rect')
+			      .attr('x',170)
+			      .attr('y', function(d, i) {
+			        return 100 + i * 20;
+			      })
+			      .attr('width', 10)
+			      .attr('height', 10)
+			      .style('fill', function(d,i) {
+			        return color[i];
+			      });
+
+			    legend.append('text')
+			    		.attr("font-size", 14)
+			    		.attr("font-family","monospace")
+			    		.attr('x', 150)
+			    		.attr('y', 100)
+			    		.text("Temperature en °C ")
+
+			    legend.append('text')
+			      .attr("font-size", 12)
+			      .attr("font-family", "monospace")
+			      .attr('x', 200)
+			      .attr('y', function(d, i) {
+			        return (i * 20) + 109;
+			      })
+			      .text(function(d,i) {
+			        return classes[i];
+			      });		
 			//circles.on("mouseover", console.log("Over a point"))
 			
 }
