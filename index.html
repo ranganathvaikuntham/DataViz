@@ -44,8 +44,8 @@ body{
   }
   .box.active
   {
-  	width: 100% ;
-  	height: 100% ;
+  	width: 99% ;
+  	height: 90% ;
   }
   .box p 
   {
@@ -113,6 +113,8 @@ body{
     height: 500px ;
   }
 
+  
+
   </style>  
   <head>
   	<script
@@ -155,29 +157,23 @@ body{
  <div class="box">
  	<div class="toggle"><span></span></div>
  	<p>
- 		<br><b>Welcome</b> <br><br><br>
- 		R1. "-Mettre une information que le site se charge si trop long"<br>
+ 		<br><b><font size="20">Welcome</font></b> <br><br><br>
+ 	
 
-- Instead of showing all the fires on the map we now show only the fires for the first day (August  1 2019) when the map loads. This reduces the time of loading of the map drastically, thus eliminating the need of informing the user to wait initially.<br>
--  To facilitate the viewing of all the fires during this period, we have now added an optional checkbox which the user can select if they wish. Upon being checked this will show all the fires on the map. A warning statement has been written that this task could take a long time due to the vast size of data being loaded. <br>
+ <b>- Context - </b> <br> <br>
+Forest fires of unprecedented scale and violence have devastated entire regions of Australia since September 2019. They have caused considerable damage, not only to homes but also to flora and fauna. Over 1 billion animals have been killed and million hectares of forest land has been burned. Damage to human life and property is estimated around 485 million $. <br><br>
+With our visualization, we want to answer some questions about the evolution of the fire dispersion, the regions that have experienced intense fires, in which periods of summer and what were the maximum values, etc. <br><br>
+Observing the trends for this year of 2019 could help relevant authorities to be better prepared for the future, if bushfires of this scale and intensity were ever to repeat. <br><br>
 
-R2 -Indiquer l'année du jeu de donnée <br>
-- The year is indicated in the title. <br>
+<b> - Description of the Visualization - </b> <br><br>
+Our goal is to show the temperatures and fire radiative power(frp) of the bushfires during August 2019-December 2019.  Initially, when the page loads, we chose to project only the fires for the first date (08/01/2019) to speed up the loading of the map. An option to show all the fires during this period of 5 months is available as a checkbox below the map. The legend indicates the values of the temperatures according to their colors. <br><br>
+The ‘Github style’ heatmap on the right gives a global view of the evolution of fires during this period. The color intensity reflects the maximum temperature value observed on the particular day. Each day of every month is covered here. Upon hovering the mouse over a rectangle corresponding to a particular day you can see the date, maximum temperature and the maximum frp value recorded this day. <br><br> 
+ By clicking on the rectangle, only the fires initiated on that particular day are projected on the map with a brief animation that takes place to emphasize the change. On the map, by hovering over the fire points a tooltip is displayed which shows the information related to this specific location including the temperature and the frp value .<br><br>
 
-R3 -Mieux formatter les axes et indiquer le sens des valeurs numériques.<br>
-- X-axis ticks formatted using 'tickFormat' and 'tickValues' properties of the axes. (can use scale properties instead)<br>
-- Added axis label to the X-axis indicating the days. This was done by appending a text element to the heatmap svg. The canvas for drawing the heatmap was shifted down by increasing the top margin (margin coding style format recommendations of Mike Bostock have been followed). Then once we had enough space, the text was appropriately adjusted.<br>
 
-Note that the for the months the axis label is not required as the information is evidently clear.<br>
 
-R4 -Un tooltip plus lisible.<br>
-- Increased the size(height and width) of the tooltip and the fonts to 16px now.<br>
-- Added "<strong>" HTML formatting to the text to make it more read-able<br>
-
-R5 -Tout faire rentrer dans l'axe horizontal"<br>
-- Used Css containers and arranged the images side by side.<br>
-- Modified the values of the sizes and projections to make them fit perfectly and resolve the<br>
-  fitting problems which occured before.</p>
+	
+ 	</p>
  </div>
 <!-- end Help -->
 
@@ -189,12 +185,37 @@ R5 -Tout faire rentrer dans l'axe horizontal"<br>
   	<div class="container2" id="plot2" > </div>
 
   	<input type="checkbox" id="myCheckbox"> Show all the fires for the time period <br>
-  	Warnning : Due to the sheer size of the data, this could take some time to load, please wait patiently.
+  	<b>Warning </b> : Due to the sheer size of the data, this could take some time to load, please wait patiently.
 
   	<br>
   	<hr>
-  	<p> <b>Members : </b> AIT-OUAMMI Redwane & VAIKUNTHAM Ranganath <br>
-  		<b>Credits : </b>
+  	<p> <b>Authors : </b> <br>
+  		<a href="https://twitter.com/redwane_a">
+<img border="0" alt="W3Schools" src="Twitter.png" width="40" height="20">
+</a>
+  		<a href="https://github.com/redwaneaitouammi/">
+<img border="0" alt="W3Schools" src="git.png" width="20" height="20">
+</a>
+ AIT-OUAMMI Redwane 	<br>
+
+<a href="https://twitter.com/RVaikuntham">
+<img border="0" alt="W3Schools" src="Twitter.png" width="40" height="20">
+</a> 
+  		<a href="https://github.com/ranganathvaikuntham/">
+<img border="0" alt="W3Schools" src="git.png" width="20" height="20">
+</a>
+ VAIKUNTHAM Ranganath <br>
+  	
+  	
+	
+	<br><b>Credits : </b><br>
+	
+	 	<a href="https://www.ec-lyon.fr/">
+<img border="0" alt="W3Schools" src="ecl.png" width="20" height="20">
+</a>
+	This work is done as part of an academic deliverable for the course <a href="https://github.com/LyonDataViz/MOS5.5-Dataviz">Interactive Data Visualziation</a> supervized by <a href="https://www.ec-lyon.fr/contacts/romain-vuillemot">Mr. Romain Vuillemot</a> . <br>
+
+	The source code of the project is available on github following this <a href="https://github.com/ranganathvaikuntham/DataViz">link</a> .
 
     <script>
 // css style
@@ -282,7 +303,7 @@ R5 -Tout faire rentrer dans l'axe horizontal"<br>
 
     // check here
             //console.log("firedatabydate");
-      //console.log(firedatabydate) ;
+      console.log(firedatabydate) ;
 
     // Parse and caculate some values for each firedata
       firedatabydate.forEach(function(s) {
@@ -407,7 +428,7 @@ function plotfirepoints (svg, data) {
 
       //legend
         var color = ["" ,"salmon","crimson","darkred"]
-        var classes = ["" , "[0,47]" , "[46,57]" , "[58,226]"]
+        var classes = ["" , "[0,47]" , "[46,57]" , "[58,234]"]
 
          var legend = svg.selectAll('g')
             .data(classes)
