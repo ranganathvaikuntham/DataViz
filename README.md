@@ -12,5 +12,9 @@ Observing the trends for this year of 2019 could help relevant authorities to be
 # Visualization
 ![Map Visualization](/images/map.PNG)
 
+Our goal is to show the temperatures and fire radiative power(frp) of the bushfires during August 2019-December 2019. Initially, when the page loads, we chose to project only the fires for the first date (08/01/2019) to speed up the loading of the map. An option to show all the fires during this period of 5 months is available as a checkbox below the map. The legend indicates the values of the temperatures according to their colors.
+
+![Map Visualization](/images/grid.PNG)
+
 
 
