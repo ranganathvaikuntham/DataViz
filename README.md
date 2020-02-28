@@ -26,5 +26,5 @@ Ranganath VAIKUNTHAM
 
 # Credits
 
-This work is done as part of an academic deliverable for the course [Interactive Data Visualziation](https://github.com/LyonDataViz/MOS5.5-Dataviz) supervized by Mr. Romain Vuillemot - Ecole Centrale Lyon
+This work is done as part of an academic deliverable for the course [Interactive Data Visualization](https://github.com/LyonDataViz/MOS5.5-Dataviz) supervised by Mr. Romain Vuillemot - Ecole Centrale Lyon
 
