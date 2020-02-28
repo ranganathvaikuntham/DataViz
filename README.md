@@ -10,7 +10,7 @@ With our visualization, we want to answer some questions about the evolution of 
 Observing the trends for this year of 2019 could help relevant authorities to be better prepared for the future, if bushfires of this scale and intensity were ever to repeat.
 
 # Visualization
-![Map Visualization](/images/map.png)
+![Map Visualization](/images/map.PNG)
 
 
 
