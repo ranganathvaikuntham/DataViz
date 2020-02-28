@@ -21,10 +21,10 @@ The ‘Github style’ heatmap on the right gives a global view of the evolution
 By clicking on the rectangle, only the fires initiated on that particular day are projected on the map with a brief animation that takes place to emphasize the change. On the map, by hovering over the fire points a tooltip is displayed which shows the information related to this specific location including the temperature and the frp value .
 
 # Authors 
-Redwane AIT-OUAMMI
+Redwane AIT-OUAMMI && 
 Ranganath VAIKUNTHAM
 
 # Credits
 
-This work is done as part of an academic deliverable for the course Interactive Data Visualziation supervized by Mr. Romain Vuillemot - Ecole Centrale Lyon
+This work is done as part of an academic deliverable for the course [Interactive Data Visualziation](https://github.com/LyonDataViz/MOS5.5-Dataviz) supervized by Mr. Romain Vuillemot - Ecole Centrale Lyon
 
