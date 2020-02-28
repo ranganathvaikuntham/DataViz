@@ -16,5 +16,9 @@ Our goal is to show the temperatures and fire radiative power(frp) of the bushfi
 
 ![Map Visualization](/images/grid.PNG)
 
+The ‘Github style’ heatmap on the right gives a global view of the evolution of fires during this period. The color intensity reflects the maximum temperature value observed on the particular day. Each day of every month is covered here. Upon hovering the mouse over a rectangle corresponding to a particular day you can see the date, maximum temperature and the maximum frp value recorded this day.
+
+By clicking on the rectangle, only the fires initiated on that particular day are projected on the map with a brief animation that takes place to emphasize the change. On the map, by hovering over the fire points a tooltip is displayed which shows the information related to this specific location including the temperature and the frp value .
+
 
 
