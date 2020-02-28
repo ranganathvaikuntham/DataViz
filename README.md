@@ -9,63 +9,61 @@ Forest fires of unprecedented scale and violence have devastated entire regions 
 With our visualization, we want to answer some questions about the evolution of the fire dispersion, the regions that have experienced intense fires, in which periods of summer and what were the maximum values, etc.
 Observing the trends for this year of 2019 could help relevant authorities to be better prepared for the future, if bushfires of this scale and intensity were ever to repeat.
 
-# Collecte et Source de données
-	Les nouvelles actuelles sur les feux en Australie se répandent rapidement, mais on ne peut pas en dire autant des données. Les satellites de la NASA fournissent un premier ensemble de données sur les incendies en Australie. 
+# Collection and sourcing of the data
+Current news about fires in Australia is spreading rapidly, but the same cannot be said of the data. NASA satellites are providing the first set of data on fires in Australia. 
 
-Sources: https://www.kaggle.com/carlosparadis/fires-from-space-australia-and-new-zeland?fbclid=IwAR0btRqk-fTw1-Ae5Xj7wTABf99LHqtQbmRANsFshZ2oYyE2RE_WKBnbbDk
+Source: https://www.kaggle.com/carlosparadis/fires-from-space-australia-and-new-zeland?fbclid=IwAR0btRqk-fTw1-Ae5Xj7wTABf99LHqtQbmRANsFshZ2oYyE2RE_WKBnbbDk
 
-Possible source pour donnés additionnelle : https://modis.gsfc.nasa.gov/
+Possible source for additional data : https://modis.gsfc.nasa.gov/
 https://www.google.com/search?q=modis+australia+wildfire&oq=modis+australia+wildfire&aqs=chrome..69i57.8016j0j4&sourceid=chrome&ie=UTF-8
 
 
-# Description du jeu de données
-Le jeu de données est sous forme d’une table dont les colonnes sont décritent ci-dessous.
+# Description of the data
+The dataset is in the form of a table whose columns are described below.
 
-Latitude -Centre d'un pixel de feu de 1 km 
-Longitude : Centre d'un pixel de feu de 1 km
-Brightness : Température en Kelvin mesuré par l'outil de Channel 21 sur le satellite.
-Scan & Track: reflètent la taille réelle des pixels.
-Acq_date : date d'acquisition
-Acq_time : Temps d'acquisition (en UTC).
-Satellite -  Satellite: A = Aqua et T = Terra.
-Instrument - Valeur constante pour MODIS.
-Confidence (0-100%) : Cette valeur est basée sur un ensemble de quantités d'algorithmes intermédiaires utilisées dans le processus de détection. Elle est destinée à aider les utilisateurs à évaluer la qualité de chaque pixel de hotspot/feu. Les estimations de confiance varient entre 0 et 100 % et se voient attribuer l'une des trois classes d'incendie 
--incendie de faible confiance.
--incendie de confiance nominale.
--incendie de confiance élevée.
-Version -  near real time(NRT) ou standard processing.
-Bright_t31 - Température en Kelvin mesuré par l”outil de Channel 31 sur le satellite.
-Frp-   ‘fire radiative power’ en Megawatts: Représente la puissance radiative du feu intégrée aux pixels 
+Latitude - Center of a 1 km fire pixel 
+Longitude: Centre of a 1 km fire pixel
+Brightness: Temperature in Kelvin measured by the Channel 21 tool on the satellite.
+Scan & Track: Reflects the actual pixel size.
+Acq_date: date of acquisition
+Acq_time: Acquisition time (in UTC).
+Satellite - Satellite: A = Aqua and T = Terra.
+Instrument - Constant value for MODIS.
+Confidence (0-100%): This value is based on a set of quantities of intermediate algorithms used in the detection process. It is intended to help users evaluate the quality of each hotspot/fire pixel. Confidence estimates range from 0-100% and are assigned one of three fire classes 
+-low-confidence fire.
+-nominal confidence fire.
+-high confidence fire.
+Version - near real time(NRT) or standard processing.
+Bright_t31 - Temperature in Kelvin measured by the Channel 31 tool on the satellite.
+Frp- 'fire radiative power' in Megawatts: Represents the radiative power of the fire integrated into the pixels. 
 Daynight - D- Daytime , N- Nighttime
 
-Pour notre analyse on propose d’utiliser seulement quelques colonnes des données qui nous sert. Ce sont les suivantes:
+For our analysis we propose to use only a few columns of the data we need. These are as follows:
 
 Latitude
 Longitude
-Brightness ( on choisit le sortie du Channel 21 sur le Channel 31)
-Acq_date et Acq_time 
+Brightness ( we choose the output of Channel 21 on Channel 31)
+Acq_date and Acq_time 
  Frp
 Daynight
 
 # Data Cleaning and preparation
-Etant donné que le lien de source de nos donnés se compose de quatre base de donnés, on a décidé d’utiliser le premier s’appelle ‘fire_archive_M6_96619.csv’.
+Since the source link of our data consists of four databases, we decided to use the first one called 'fire_archive_M6_96619.csv'.
 
-Excel est l’outil qu’on emploie pour nettoyer nos donnés. 
-Les étapes à suivre pour nettoyer des données avec excel sont le suites:
+Excel is the tool we use to clean up our data. 
+The steps to follow to clean up data with excel are the following:
 
-Comprendre le sense de toutes les colonnes et enlever ce qui nous intéresse pas.
-Dans notre cas on enlève les colonnes type ( pas utile pour nous) ,bright_t31 (on utilise déjà le paramètre du ‘brightness’) et version (seulement une valeur pour ce donnes - redondant) .
+Understand the meaning of all the columns and remove what doesn't interest us.
+In our case we remove the columns type (not useful for us), bright_t31 (we already use the brightness parameter) and version (only one value for this data - redundant).
 
-Exercer la fonction du filtre sur chacun de colonnes pour voir si les valeurs vides existe pour ces colonnes. Si oui, enlève ces lignes.
- Il n’existe pas les cellules vides dans notre donnés, donc pas besoin de modification.
+Exercise the function of the filter on each column to see if empty values exist for these columns. If so, remove these lines.
+ Empty cells do not exist in our data, so there is no need for modification.
 
-Vérifions s’il existe des données anormaux ou faux. 
-Anormaux ou faux donnés sont identifié normalement avec les visualizations exploratives et une compréhension des données. 
-Avoir fait quelques visualisations exploratifs on conclure qu'il n’y a pas des données anormaux. En plus le source de NASA est très fiable et réputé. 
+Let's check if there is abnormal or false data. 
+Abnormal or false data are identified normally with exploratory visualizations and an understanding of the data. 
+Having done some exploratory visualizations we conclude that there is no abnormal data. In addition the NASA source is very reliable and reputable. 
 
-Les données sont prêt à télécharger pour le visualization.
-
-
+The data is ready to download for visualization.
 
 # Visualization
 ![Map Visualization](/images/map.PNG)
